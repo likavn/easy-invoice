@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @date : 2022/9/29
  */
 @Slf4j
-public class NuoNuoInvoiceTemplate extends InvoiceTemplate {
+public class NuoNuoInvoiceTemplate extends InvoiceTemplate<InvoiceCfg> {
     /**
      * token缓存
      */

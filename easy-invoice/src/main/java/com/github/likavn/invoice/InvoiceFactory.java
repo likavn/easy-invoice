@@ -4,10 +4,10 @@ import com.github.likavn.invoice.api.InvoiceTemplate;
 import com.github.likavn.invoice.cache.Cache;
 import com.github.likavn.invoice.cache.DefaultCache;
 import com.github.likavn.invoice.domain.InvoiceCfg;
-import com.github.likavn.invoice.enums.InvoiceFactoryCode;
 import com.github.likavn.invoice.util.Assert;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,31 +20,55 @@ public class InvoiceFactory {
     /**
      * 工厂代码和实现映射
      */
-    private static final Map<InvoiceFactoryCode, InvoiceTemplate> TEMPLATE_MAP = new ConcurrentHashMap<>();
+    @SuppressWarnings("all")
+    private static final Map<String, InvoiceTemplate> TEMPLATE_MAP = new ConcurrentHashMap<>();
+
+    /**
+     * 缓存
+     */
     private static final Cache CACHE = DefaultCache.getInstance();
+
+    // 初始化
+    static {
+        // 发票服务加载
+        @SuppressWarnings("all")
+        ServiceLoader<InvoiceTemplate> serviceLoader = ServiceLoader.load(InvoiceTemplate.class);
+        serviceLoader.forEach(template -> TEMPLATE_MAP.put(template.getFactoryCode(), (InvoiceTemplate<? extends InvoiceCfg>) template));
+    }
+
+    /**
+     * 获取本地缓存
+     *
+     * @return cache
+     */
+    public static Cache getLocalCache() {
+        return CACHE;
+    }
 
     /**
      * 获取发票实现
      *
      * @param config 配置
-     * @return service
+     * @return 发票服务
      */
     @SuppressWarnings("all")
     public static InvoiceTemplate create(InvoiceCfg config) {
-        InvoiceFactoryCode factoryCode = InvoiceFactoryCode.of(config.getFactoryCode());
-        Assert.notNull(factoryCode, "工厂代码不存在");
-
-        InvoiceTemplate template = TEMPLATE_MAP.computeIfAbsent(factoryCode, InvoiceFactoryCode::getTemplate);
-        template.init(config, getCache());
-        return template;
+        return create(config, null);
     }
 
     /**
-     * 获取缓存
+     * 获取发票实现
      *
-     * @return cache
+     * @param config 配置
+     * @param cache  缓存
+     * @return 发票服务
      */
-    public static Cache getCache() {
-        return CACHE;
+    @SuppressWarnings("all")
+    public static InvoiceTemplate create(InvoiceCfg config, Cache cache) {
+        InvoiceTemplate template = TEMPLATE_MAP.get(config.getFactoryCode());
+        Assert.notNull(template, "工厂代码对应服务不存在，code" + config.getFactoryCode());
+
+        template.load(config, null != cache ? cache : getLocalCache());
+        return template;
     }
 }
