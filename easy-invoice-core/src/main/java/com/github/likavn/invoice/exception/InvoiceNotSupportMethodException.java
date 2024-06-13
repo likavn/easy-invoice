@@ -14,8 +14,4 @@ public class InvoiceNotSupportMethodException extends RuntimeException {
     public InvoiceNotSupportMethodException(String message) {
         super(message);
     }
-
-    public InvoiceNotSupportMethodException(Exception e) {
-        super(e);
-    }
 }

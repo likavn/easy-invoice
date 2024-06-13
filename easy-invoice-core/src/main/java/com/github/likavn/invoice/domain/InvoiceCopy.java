@@ -25,6 +25,7 @@ public class InvoiceCopy {
     /**
      * 复制对象
      */
+    @SuppressWarnings("all")
     public void copy(Object source) {
         final Field[] fields = source.getClass().getDeclaredFields();
         for (Field field : fields) {

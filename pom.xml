@@ -6,10 +6,10 @@
     <groupId>com.github.likavn</groupId>
     <artifactId>easy-invoice-parent</artifactId>
     <packaging>pom</packaging>
-    <name>easy-invoice-parent</name>
+    <name>invoice</name>
     <version>${revision}</version>
     <modules>
-        <module>easy-invoice</module>
+        <module>easy-invoice-core</module>
         <module>easy-invoice-support</module>
         <module>easy-invoice-test</module>
     </modules>

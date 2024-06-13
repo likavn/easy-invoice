@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 发票查询结果
@@ -23,7 +24,7 @@ public class InvoiceResult implements Serializable {
     private Long id;
 
     /**
-     * 开票状态：1开票中、2开票成功、3开票失败、4发票作废
+     * 开票状态：1开票中、2开票成功、3开票失败、4发票作废等
      */
     private InvoiceStatus status;
 
@@ -51,4 +52,14 @@ public class InvoiceResult implements Serializable {
      * 发票号码
      */
     private String invoiceNo;
+
+    /**
+     * 二维码
+     */
+    private String qrcode;
+
+    /**
+     * 时间
+     */
+    private LocalDateTime time;
 }

@@ -1,6 +1,7 @@
 package com.github.likavn.invoice;
 
 import com.github.likavn.invoice.api.InvoiceTemplate;
+import com.github.likavn.invoice.base.InvoiceTemplateAdapter;
 import com.github.likavn.invoice.cache.Cache;
 import com.github.likavn.invoice.cache.DefaultCache;
 import com.github.likavn.invoice.domain.InvoiceCfg;
@@ -20,8 +21,7 @@ public class InvoiceFactory {
     /**
      * 工厂代码和实现映射
      */
-    @SuppressWarnings("all")
-    private static final Map<String, InvoiceTemplate> TEMPLATE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, InvoiceTemplateAdapter<?>> TEMPLATE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 缓存
@@ -32,8 +32,11 @@ public class InvoiceFactory {
     static {
         // 发票服务加载
         @SuppressWarnings("all")
-        ServiceLoader<InvoiceTemplate> serviceLoader = ServiceLoader.load(InvoiceTemplate.class);
-        serviceLoader.forEach(template -> TEMPLATE_MAP.put(template.getFactoryCode(), (InvoiceTemplate<? extends InvoiceCfg>) template));
+        ServiceLoader<InvoiceTemplateAdapter> serviceLoader = ServiceLoader.load(InvoiceTemplateAdapter.class);
+        serviceLoader.forEach(template -> TEMPLATE_MAP.put(template.getFactoryCode(), template));
+    }
+
+    private InvoiceFactory() {
     }
 
     /**
@@ -51,7 +54,6 @@ public class InvoiceFactory {
      * @param config 配置
      * @return 发票服务
      */
-    @SuppressWarnings("all")
     public static InvoiceTemplate create(InvoiceCfg config) {
         return create(config, null);
     }
@@ -63,9 +65,8 @@ public class InvoiceFactory {
      * @param cache  缓存
      * @return 发票服务
      */
-    @SuppressWarnings("all")
     public static InvoiceTemplate create(InvoiceCfg config, Cache cache) {
-        InvoiceTemplate template = TEMPLATE_MAP.get(config.getFactoryCode());
+        InvoiceTemplateAdapter<?> template = TEMPLATE_MAP.get(config.getFactoryCode());
         Assert.notNull(template, "工厂代码对应服务不存在，code" + config.getFactoryCode());
 
         template.load(config, null != cache ? cache : getLocalCache());

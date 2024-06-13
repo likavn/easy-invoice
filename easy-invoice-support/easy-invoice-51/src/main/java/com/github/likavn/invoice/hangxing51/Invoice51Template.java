@@ -1,6 +1,6 @@
 package com.github.likavn.invoice.hangxing51;
 
-import com.github.likavn.invoice.api.InvoiceTemplate;
+import com.github.likavn.invoice.base.InvoiceTemplateAdapter;
 import com.github.likavn.invoice.domain.InvoiceData;
 import com.github.likavn.invoice.domain.InvoiceResult;
 import com.github.likavn.invoice.domain.InvoiceTitle;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date : 2022/9/29
  */
 @Slf4j
-public class Invoice51Template extends InvoiceTemplate<Invoice51Cfg> {
+public class Invoice51Template extends InvoiceTemplateAdapter<Invoice51Cfg> {
 
     @Override
     public String getFactoryCode() {
@@ -24,34 +24,28 @@ public class Invoice51Template extends InvoiceTemplate<Invoice51Cfg> {
     }
 
     @Override
-    public String qrCodeInvoice(InvoiceData record) {
+    public String qrCodeInvoiceImpl(InvoiceData data) {
         throw new InvoiceNotSupportMethodException();
     }
 
     @Override
-    public void invoice(InvoiceData record, InvoiceTitle title) {
-        Invoice51Cfg config = getConfig();
-    }
-
-    @Override
-    public void reInvoice(InvoiceData record, InvoiceTitle title) {
-        System.out.println("reInvoice");
-    }
-
-    @Override
-    public void cancelInvoice(InvoiceData record) {
-        Invoice51Cfg config = getConfig();
-
-        System.out.println("cancelInvoice");
-    }
-
-    @Override
-    public List<InvoiceResult> queryInvoiceResult(List<InvoiceData> records) {
+    public void invoiceImpl(InvoiceData data, InvoiceTitle title) {
         throw new InvoiceNotSupportMethodException();
     }
 
     @Override
-    public Integer queryBillLeftCount() {
+    public void reInvoiceImpl(InvoiceData data, InvoiceTitle title) {
         throw new InvoiceNotSupportMethodException();
     }
+
+    @Override
+    public void cancelInvoiceImpl(InvoiceData data) {
+        throw new InvoiceNotSupportMethodException();
+    }
+
+    @Override
+    public List<InvoiceResult> queryInvoiceResultImpl(List<InvoiceData> records) {
+        throw new InvoiceNotSupportMethodException();
+    }
+
 }
